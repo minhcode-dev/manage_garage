@@ -7,7 +7,7 @@ class CreateRepairOrderPartsTable extends Migration
 {
     public function up()
     {
-        Schema::create('repair_order_parts', function (Blueprint $table) {
+        Schema::create('repair_order_part', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('part_id');
             // các cột khác ví dụ:
@@ -23,7 +23,7 @@ class CreateRepairOrderPartsTable extends Migration
     }
     public function down()
     {
-        Schema::dropIfExists('repair_order_parts');
+        Schema::dropIfExists('repair_order_part');
     }
 }
 ?>

@@ -7,6 +7,15 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form action="{{ route('repair_orders.store') }}" method="POST">
         @csrf
@@ -44,24 +53,32 @@
             @error('employee_id')<small class="text-danger">{{ $message }}</small>@enderror
         </div>
 
+        <div class="mb-3">
+            <label>Phương thức thanh toán</label>
+            <select name="payment_method" class="form-control" required>
+                <option value="">-- Chọn phương thức --</option>
+                <option value="tien_mat">Tiền mặt</option>
+                <option value="chuyen_khoan">Chuyển khoản</option>
+                <option value="the_tin_dung">Thẻ tín dụng</option>
+            </select>
+            @error('payment_method')<small class="text-danger">{{ $message }}</small>@enderror
+        </div>
+
         <hr>
 
         <h4>Dịch vụ</h4>
         <div id="services-wrapper">
             <div class="service-row row mb-2">
-                <div class="col-8">
-                    <select name="services[0][id]" class="form-control">
+                <div class="col-11">
+                    <select name="service_ids[]" class="form-control">
                         <option value="">-- Chọn dịch vụ --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}">{{ $service->name }} ({{ number_format($service->price) }} VNĐ)</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-3">
-                    <input type="number" name="services[0][quantity]" class="form-control" value="1" min="1" placeholder="Số lượng">
-                </div>
                 <div class="col-1">
-                    <button type="button" class="btn btn-danger btn-remove-service">&times;</button>
+                    <button type="button" class="btn btn-danger btn-remove-service">×</button>
                 </div>
             </div>
         </div>
@@ -73,7 +90,7 @@
         <div id="parts-wrapper">
             <div class="part-row row mb-2">
                 <div class="col-8">
-                    <select name="parts[0][id]" class="form-control">
+                    <select name="part_ids[]" class="form-control part-select">
                         <option value="">-- Chọn phụ tùng --</option>
                         @foreach($parts as $part)
                             <option value="{{ $part->id }}">{{ $part->name }} ({{ number_format($part->price) }} VNĐ)</option>
@@ -81,10 +98,10 @@
                     </select>
                 </div>
                 <div class="col-3">
-                    <input type="number" name="parts[0][quantity]" class="form-control" value="1" min="1" placeholder="Số lượng">
+                    <input type="number" name="part_quantities[]" class="form-control" value="1" min="1" placeholder="Số lượng">
                 </div>
                 <div class="col-1">
-                    <button type="button" class="btn btn-danger btn-remove-part">&times;</button>
+                    <button type="button" class="btn btn-danger btn-remove-part">×</button>
                 </div>
             </div>
         </div>
@@ -110,8 +127,53 @@
         let newRow = document.createElement('div');
         newRow.classList.add('service-row', 'row', 'mb-2');
         newRow.innerHTML = `
-            <div class="col-8">
-                <select name="services[${serviceIndex}][id]" class="form-control">
+            <div class="col-11">
+                <select name="service_ids[]" class="form-control">
                     <option value="">-- Chọn dịch vụ --</option>
                     @foreach($services as $service)
-                        <option value="{{ $service->id
+                        <option value="{{ $service->id }}">{{ $service->name }} ({{ number_format($service->price) }} VNĐ)</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-danger btn-remove-service">×</button>
+            </div>
+        `;
+        wrapper.appendChild(newRow);
+        serviceIndex++;
+    });
+
+    document.getElementById('btn-add-part').addEventListener('click', function() {
+        let wrapper = document.getElementById('parts-wrapper');
+        let newRow = document.createElement('div');
+        newRow.classList.add('part-row', 'row', 'mb-2');
+        newRow.innerHTML = `
+            <div class="col-8">
+                <select name="part_ids[]" class="form-control part-select">
+                    <option value="">-- Chọn phụ tùng --</option>
+                    @foreach($parts as $part)
+                        <option value="{{ $part->id }}">{{ $part->name }} ({{ number_format($part->price) }} VNĐ)</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-3">
+                <input type="number" name="part_quantities[]" class="form-control" value="1" min="1" placeholder="Số lượng">
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-danger btn-remove-part">×</button>
+            </div>
+        `;
+        wrapper.appendChild(newRow);
+        partIndex++;
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-remove-service')) {
+            e.target.closest('.service-row').remove();
+        }
+        if (e.target.classList.contains('btn-remove-part')) {
+            e.target.closest('.part-row').remove();
+        }
+    });
+</script>
+@endsection

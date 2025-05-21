@@ -39,7 +39,22 @@ class ServiceController extends Controller
         Service::create($request->all());
         return back()->with('success', 'Đã thêm dịch vụ');
     }
-    
+    public function update(Request $request, Service $service)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+    ]);
+
+    $service->update([
+        'name' => $request->name,
+        'description' => $request->description,
+        'price' => $request->price,
+    ]);
+
+    return redirect()->route('services.index')->with('success', 'Cập nhật dịch vụ thành công.');
+}
     public function destroy(Service $service) {
         $service->delete();
         return back()->with('success', 'Đã xóa dịch vụ');

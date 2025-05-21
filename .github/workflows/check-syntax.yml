@@ -1,0 +1,28 @@
+name: Check PHP Syntax
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🧰 Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql
+
+      - name: 📦 Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: 🧪 Run PHP syntax check
+        run: |
+          find ./app ./routes ./config ./database -type f -name "*.php" -print0 | xargs -0 -n1 php -l

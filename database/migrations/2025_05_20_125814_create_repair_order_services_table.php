@@ -7,7 +7,7 @@ class CreateRepairOrderServicesTable extends Migration
 {
     public function up()
     {
-        Schema::create('repair_order_services', function (Blueprint $table) {
+        Schema::create('repair_order_service', function (Blueprint $table) {
             $table->id();
             $table->foreignId('repair_order_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
@@ -18,7 +18,7 @@ class CreateRepairOrderServicesTable extends Migration
     }
     public function down()
     {
-        Schema::dropIfExists('repair_order_services');
+        Schema::dropIfExists('repair_order_service');
     }
 }
 ?>

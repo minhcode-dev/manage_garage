@@ -101,7 +101,7 @@
     <!-- ✅ Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="mx-auto">
-            <a class="navbar-brand" href="#">Garage Management</a>
+            <a class="navbar-brand" href="#">Garage ô tô Hiệp Phát</a>
         </div>
 
         <div class="dropdown ms-auto me-3">
@@ -127,15 +127,13 @@
             <hr class="divider">
             <a href="{{ url('services') }}" class="btn btn-function">Quản lý dịch vụ</a>
             <hr class="divider">
-            <a href="{{ url('repair_order') }}" class="btn btn-function">Quản lý đơn sửa chữa</a>
+            <a href="{{ url('repair_orders') }}" class="btn btn-function">Quản lý đơn sửa chữa</a>
             <hr class="divider">
             <a href="{{ url('parts') }}" class="btn btn-function">Quản lý kho phụ tùng</a>
             <hr class="divider">
             <a href="{{ url('employees') }}" class="btn btn-function">Quản lý nhân viên</a>
             <hr class="divider">
             <a href="{{ url('reports') }}" class="btn btn-function">Thống kê - báo cáo</a>
-            <hr class="divider">
-            <a href="{{ url('appointments') }}" class="btn btn-function">Lịch hẹn sửa xe</a>
         </div>
         <div class="main-content">
             @yield('content')

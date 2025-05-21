@@ -46,7 +46,13 @@
                     <td>{{ $vehicle->model }}</td>
                     <td>{{ $vehicle->year }}</td>
                     <td>{{ $vehicle->color }}</td>
-                    <td>{{ $vehicle->owner?->name ?? '-' }}</td>
+                    <td>@if($vehicle->owner)
+                        <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#ownerModal{{ $vehicle->id }}">
+                            {{ $vehicle->owner->name }}
+                        </button>
+                    @endif
+                    </td>
                     <td>
                         @if($vehicle->image)
                             <img src="{{ asset('storage/' . $vehicle->image) }}" alt="Ảnh xe" width="100">
@@ -188,6 +194,29 @@
             </div>
         </div>
     </div>
+    @if($vehicle->owner)
+        <div class="modal fade" id="ownerModal{{ $vehicle->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thông tin chủ xe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Tên:</strong> {{ $vehicle->owner->name }}</p>
+                        <p><strong>Email:</strong> {{ $vehicle->owner->email }}</p>
+                        <p><strong>SĐT:</strong> {{ $vehicle->owner->phone }}</p>
+                        <p><strong>Địa chỉ:</strong> {{ $vehicle->owner->address }}</p>
+                        <!-- Thêm các trường khác nếu có -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
 @endsection
 @push('scripts')
     <!-- jQuery trước nếu chưa có -->

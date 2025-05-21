@@ -62,6 +62,7 @@
       <th>Tên</th>
       <th>Điện thoại</th>
       <th>Email</th>
+      <th>Lịch sử sửa chữa</th>
       <th>Hành động</th>
     </tr>
     </thead>
@@ -72,6 +73,70 @@
       <td>{{ $customer->name }}</td>
       <td>{{ $customer->phone }}</td>
       <td>{{ $customer->email }}</td>
+      <td>
+  @if ($customer->repairOrders->isNotEmpty())
+    <!-- Nút xem lịch sử mở modal -->
+    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+      data-bs-target="#viewHistoryModal{{ $customer->id }}">
+      Lịch sử
+    </button>
+
+    <!-- Modal xem lịch sử (ví dụ) -->
+    <div class="modal fade" id="viewHistoryModal{{ $customer->id }}" tabindex="-1" aria-labelledby="viewHistoryLabel{{ $customer->id }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewHistoryLabel{{ $customer->id }}">Lịch sử sửa chữa - {{ $customer->name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+          <ul class="list-group">
+@foreach ($customer->repairOrders as $order)
+  <li class="list-group-item">
+    <strong>Ngày sửa:</strong> {{ \Carbon\Carbon::parse($order->date)->format('d/m/Y') }}<br>
+    <strong>Tổng tiền:</strong> {{ number_format($order->total_amount, 0, ',', '.') }}₫<br>
+    <strong>Trạng thái sửa chữa:</strong> {{ $order->repair_status }}<br>
+    <strong>Thanh toán:</strong> {{ $order->payment_status }} ({{ $order->payment_method }})<br>
+    <strong>Ghi chú:</strong> {{ $order->notes ?? 'Không có ghi chú' }}<br>
+
+    {{-- Danh sách phụ tùng --}}
+    @if ($order->parts->count())
+      <strong>Phụ tùng đã dùng:</strong>
+      <ul class="mb-1">
+        @foreach ($order->parts as $part)
+          <li>
+            {{ $part->name }} - SL: {{ $part->pivot->quantity }} - Giá: {{ number_format($part->price, 0, ',', '.') }}₫
+          </li>
+        @endforeach
+      </ul>
+    @else
+      <em>Không có phụ tùng sử dụng</em><br>
+    @endif
+
+    {{-- Danh sách dịch vụ --}}
+    @if ($order->services->count())
+      <strong>Dịch vụ:</strong>
+      <ul>
+        @foreach ($order->services as $service)
+          <li>{{ $service->name }} - {{ number_format($service->price, 0, ',', '.') }}₫</li>
+        @endforeach
+      </ul>
+    @else
+      <em>Không có dịch vụ</em>
+    @endif
+  </li>
+@endforeach
+</ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  @else
+    <span class="text-muted">Không có</span>
+  @endif
+</td>
+
       <td>
       <!-- Nút sửa mở modal sửa -->
       <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
@@ -129,8 +194,9 @@
       </div>
       </div>
     </div>
-
+    
     @endforeach
     </tbody>
+    
   </table>
 @endsection

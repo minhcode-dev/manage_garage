@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Str;
-
+use PDF;
 use App\Models\Part;
 use Illuminate\Http\Request;
 
@@ -11,9 +11,24 @@ class PartController extends Controller
     /**
      * Hiển thị danh sách phụ tùng
      */
-    public function index()
+    public function index(Request $request)
     {
         $parts = Part::all();
+        $query = Part::query();
+
+    if ($request->filled('start_date')) {
+        $query->whereDate('created_at', '>=', $request->start_date);
+    }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('created_at', '<=', $request->end_date);
+    }
+
+    if ($request->has('low_stock')) {
+        $query->where('stock', '<=', 5); // Hàng sắp hết
+    }
+
+    $parts = $query->get();
         return view('parts.index', compact('parts'));
     }
 
@@ -36,6 +51,7 @@ class PartController extends Controller
             // 'code' => 'required|unique:parts,code', // Bỏ required ở đây để cho phép tự tạo nếu trống
             'code' => 'nullable|unique:parts,code',
             'name' => 'required|string|max:255',
+            'unit' => 'required',
             'stock' => 'nullable|integer|min:0',
             'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
@@ -59,6 +75,7 @@ class PartController extends Controller
         Part::create([
             'code' => $code,
             'name' => $request->name,
+            'unit' => 'required',
             'stock' => $request->stock ?? 0,
             'price' => $request->price ?? 0,
             'description' => $request->description,
@@ -91,6 +108,7 @@ class PartController extends Controller
         $request->validate([
             'code' => 'required|unique:parts,code,' . $part->id,
             'name' => 'required|string|max:255',
+            'unit' => 'required',
             'stock' => 'nullable|integer|min:0',
             'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
@@ -99,6 +117,7 @@ class PartController extends Controller
         $part->update([
             'code' => $request->code,
             'name' => $request->name,
+            'unit' => $request->unit,
             'stock' => $request->stock ?? 0,
             'price' => $request->price ?? 0,
             'description' => $request->description,
@@ -107,6 +126,13 @@ class PartController extends Controller
         return redirect()->route('parts.index')->with('success', 'Cập nhật phụ tùng thành công!');
     }
 
+    public function exportPdf()
+    {
+        $parts = Part::all();
+        $pdf = PDF::loadView('parts.pdf', compact('parts'));
+        return $pdf->download('danh-sach-phu-tung.pdf');
+    }
+    
     /**
      * Xóa phụ tùng
      */

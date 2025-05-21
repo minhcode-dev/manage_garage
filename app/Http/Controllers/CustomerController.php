@@ -23,6 +23,13 @@ class CustomerController extends Controller
 
     return view('customers.index', compact('customers'));
 }
+public function history($id)
+{
+    $customer = Customer::with('repairOrders.vehicle')->findOrFail($id);
+    $repairOrders = $customer->repairOrders()->latest()->get();
+
+    return view('customers.history', compact('customer', 'repairOrders'));
+}
 
 
     public function create()

@@ -47,69 +47,79 @@
             @endforeach
         </tbody>
     </table>
-<!-- Modal Thêm nhân viên -->
-<div class="modal fade @if($errors->any()) show d-block @endif" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="{{ $errors->any() ? 'false' : 'true' }}" style="{{ $errors->any() ? 'background-color: rgba(0,0,0,0.5);' : '' }}">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="{{ route('employees.store') }}">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEmployeeModalLabel">Thêm nhân viên</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                </div>
-                <div class="modal-body">
-                    @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach($errors->all() as $err)
-                                <li>{{ $err }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
 
-                    <div class="mb-3">
-                        <label>Tên</label>
-                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+    <!-- Modal Thêm nhân viên -->
+    <div class="modal fade @if($errors->any()) show d-block @endif" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="{{ $errors->any() ? 'false' : 'true' }}" style="{{ $errors->any() ? 'background-color: rgba(0,0,0,0.5);' : '' }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('employees.store') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">Thêm nhân viên</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
+                    <div class="modal-body">
+                        @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
 
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                    </div>
+                        <div class="mb-3">
+                            <label>Tên</label>
+                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Mật khẩu</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Nhập lại mật khẩu</label>
-                        <input type="password" name="password_confirmation" class="form-control" required>
-                    </div>
+                        <div class="mb-3">
+                            <label>Mật khẩu</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Điện thoại</label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label>Nhập lại mật khẩu</label>
+                            <input type="password" name="password_confirmation" class="form-control" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Chức vụ</label>
-                        <input type="text" name="position" class="form-control" value="{{ old('position') }}">
-                    </div>
+                        <div class="mb-3">
+                            <label>Điện thoại</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+                        </div>
 
-                    <div class="mb-3">
-                        <label>Lương</label>
-                        <input type="number" name="salary" class="form-control" value="{{ old('salary') }}">
+                        <div class="mb-3">
+                            <label>Chức vụ</label>
+                            <select name="position" class="form-control" required>
+                                <option value="" {{ old('position') == '' ? 'selected' : '' }}>Chọn chức vụ</option>
+                                <option value="Cố vấn dịch vụ" {{ old('position') == 'Cố vấn dịch vụ' ? 'selected' : '' }}>Cố vấn dịch vụ</option>
+                                <option value="Thợ" {{ old('position') == 'Thợ' ? 'selected' : '' }}>Thợ</option>
+                                <option value="Kế toán" {{ old('position') == 'Kế toán' ? 'selected' : '' }}>Kế toán</option>
+                                <option value="Admin" {{ old('position') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                            </select>
+                            @error('position')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Lương</label>
+                            <input type="number" name="salary" class="form-control" value="{{ old('salary') }}">
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Thêm</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 @endsection

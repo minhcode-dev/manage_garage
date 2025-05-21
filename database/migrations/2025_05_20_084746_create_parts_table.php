@@ -12,7 +12,8 @@ class CreatePartsTable extends Migration
 
         Schema::create('parts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');       // Tên phụ tùng
+            $table->string('name');
+            $table->string('unit')->nullable(); // đơn vị như "cái", "lít", "kg"
             $table->string('code')->unique(); // Mã phụ tùng (mã riêng, dễ tìm)
             $table->text('description')->nullable(); // Mô tả
             $table->integer('stock')->default(0); // Số lượng tồn kho

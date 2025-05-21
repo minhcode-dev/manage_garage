@@ -1,5 +1,4 @@
 <?php
-// app/Models/RepairOrder.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,19 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 class RepairOrder extends Model
 {
     protected $fillable = [
-        'customer_id', 'vehicle_id', 'employee_id', 'date', 'total_amount', 'status', 'notes'
+        'customer_id',
+        'vehicle_id',
+        'employee_id',
+        'date',
+        'total_amount',
+        'status',
+        'notes',
+        'payment_method',
+        'repair_status',
+        'payment_status',
     ];
 
     public function services()
-{
-    return $this->belongsToMany(Service::class)->withPivot('quantity', 'price');
-}
+    {
+        return $this->belongsToMany(Service::class,'repair_order_service')->withPivot('quantity', 'price');
+    }
 
-public function parts()
-{
-    return $this->belongsToMany(Part::class)->withPivot('quantity', 'price');
-}
-
+    public function parts()
+    {
+        return $this->belongsToMany(Part::class,'repair_order_part')->withPivot('quantity', 'price');
+    }
 
     public function customer()
     {
@@ -36,4 +43,3 @@ public function parts()
         return $this->belongsTo(Employee::class);
     }
 }
-?>
