@@ -48,7 +48,3 @@ Todo-List (16/3-18/5)
 
 
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
->>>>>>> 245d041 (full code)
